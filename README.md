@@ -96,3 +96,12 @@ Il n'y a que dans la classe Film, où l'on fait intervenir new, lorsqu'on initia
 ### La copie d'objet peut également poser problème quand ils ont des variables d'instance qui sont des pointeurs. Quel est le problème et quelles sont les solutions ? Implementez-en une.
 
 Même soucis que les tableaux, les pointeurs doivent pointer vers des valeurs valables, pour éviter les pointeurs pendants.
+
+## **8ème étape : Créer des groupes**
+
+### Le groupe ne doit pas détruire les objets quand il est détruit car un objet peut appartenir à plusieurs groupes (on verra ce point à la question suivante). On rappelle aussi que la liste d'objets doit en fait être une liste de pointeurs d'objets. Pourquoi ? Comparer à Java.
+
+La liste ne doit pas contenir en elle même des instances d'objets, mais une liste de pointeurs, qui chacun, pointe vers l'instance d'un objet. Cela permet de ne pas re-instancier à chaque fois un objet. Cependant, il faut faire attention avec ce type d'objet qui peuvent contenir des pointeurs pendants si jamais l'objet vers lequel le pointeur pointe advenait à être détruit.
+
+## **9ème étape : Gestion automatique de la mémoire**
+

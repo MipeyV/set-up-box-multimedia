@@ -6,12 +6,11 @@
 
 class Film : public Video {
 private:
-    int* chapters = nullptr; 
-int  nbChapters = 0;             
-
+    int  nbChapters = 0;             
+    int* chapters    = nullptr;
 public:
     // Constructeur par défaut
-    Film() : Video(), chapters(nullptr), nbChapters(0) {}
+    Film() : Video(), nbChapters(0), chapters(nullptr) {}
 
     // Constructeur avec arguments
     Film(const std::string& name,
@@ -62,6 +61,7 @@ public:
                 os << ", ";
             }
         }
+        return os;
     }
 };
 
