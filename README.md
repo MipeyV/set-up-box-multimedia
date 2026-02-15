@@ -1,5 +1,7 @@
-# **Séance du 09-12-2025**  
-
+# **Compte Rendu - TP C++ / TP JAVA-SWING**
+---
+# **TP - C++**
+---
 ## **4ᵉ étape : Photos et Vidéos**  
 
 Contrairement à la fonction d'affichage:  
@@ -59,8 +61,6 @@ En Java, les obbjets sont des références (pointeurs) vers le type d'objet, mai
 
 Le résultat attendu est l'exécution de la méthode play, associée à la bonne classe de l'objet, et c'est bien le cas ! 
 
-# **Séance du 16-12-2025**
-
 ## **6ème étape : Films et tableaux**
 
 **Important :**  
@@ -105,3 +105,92 @@ La liste ne doit pas contenir en elle même des instances d'objets, mais une lis
 
 ## **9ème étape : Gestion automatique de la mémoire**
 
+### Utilisation des smart pointers (shared_ptr)
+
+Les **smart pointers** gèrent automatiquement la mémoire : les objets sont supprimés quand plus personne ne les utilise. Cela évite les fuites mémoires et les pointeurs pendants.
+
+**Modifications effectuées :**
+- Remplacement de `std::list<Multimedia*>` par `std::list<std::shared_ptr<Multimedia>>` dans la classe `Group`
+- Ajout de messages de destruction dans les destructeurs pour vérifier que tout fonctionne correctement
+
+## **10ème étape : Gestion cohérente des données**
+
+### Objectif
+
+Créer une classe `Database` qui gère **tous** les objets multimédia et groupes de manière centralisée et cohérente.
+
+### Architecture
+
+```cpp
+Database
+├─ map<string, shared_ptr<Multimedia>>  // Tous les objets (Photo, Video, Film)
+└─ map<string, shared_ptr<Group>>       // Tous les groupes
+```
+
+### Méthodes implémentées
+
+**Création :**
+- `createPhoto(name, path, latitude, longitude)` → crée une Photo et l'enregistre
+- `createVideo(name, path, duration)` → crée une Video et l'enregistre
+- `createFilm(name, path, duration, chapters, nbChapters)` → crée un Film et l'enregistre
+- `createGroup(name)` → crée un Group et l'enregistre
+
+**Recherche et affichage :**
+- `search(name)` → cherche un objet et affiche ses infos
+- `searchGroup(name)` → cherche un groupe et affiche son contenu
+- `printAll()` → affiche tous les objets multimédia
+- `printAllGroups()` → affiche tous les groupes
+
+**Lecture :**
+- `play(name)` → joue un objet multimédia par son nom
+
+### Avantages de cette approche
+
+- **Cohérence** : Un seul endroit pour créer les objets (évite les incohérences)
+- **Retrouvabilité** : Accès direct par le nom grâce aux `map`
+- **Préparation serveur** : Structure prête pour le Point 11 (client/serveur)
+
+### Comment interdire la création directe d'objets avec `new` ?
+
+On pourrait rendre les constructeurs des classes Multimedia, Photo, Video, Film **private**, et faire de Database une **classe amie (friend)**. Cependant, pour simplifier, nous laissons les constructeurs publics et comptons sur le respect du protocole de la Database.
+
+
+## **11ème étape : Client / Serveur**
+
+On a réalisé un serveur TCP pour permettre à un client d’interroger la base multimédia à distance.
+Le serveur écoute sur le **port 3331**, lit une commande par ligne, puis renvoie une réponse texte nettoyée.
+
+### Commandes supportées
+- `search` `<nom>` : recherche un objet et affiche ses infos
+- `play` `<nom>` : lance la lecture d’un objet
+- `list` : affiche tous les objets
+- `groups` : affiche tous les groupes  
+
+Une base minimale est créée au démarrage (photo/vidéo/film) pour pouvoir tester rapidement les commandes.
+
+---
+# **TP - JAVA-SWING** :
+---
+
+## **1ère étape : Fenêtre principale et quelques intéracteurs**
+
+Dans cette partie, on a créé une première Classe `SwingClient` qui sert de point d'entrée et lance l'interface Swing.
+
+On a aussi une classe `PrincipalWindow` qui représente la fenêtre principale et contient les boutons comme attributs.
+
+## **2ème étape : Menus, barre d'outils et actions**
+
+On a ajouté une **barre de menus** (`JMenuBar` + `JMenu`) et une **barre d’outils** (`JToolBar`) placée au Nord de la fenêtre.  
+
+Les commandes du menu et de la toolbar réutilisent les mêmes Actions (`AbstractAction`) que les boutons, ce qui évite de dupliquer le code et garantit un comportement identique partout.
+
+## **3ème étape : Intéraction Client/Serveur**
+
+On a integre le Client.java (equivalent Java de client.cpp) dans le package swing puis on l'a instantie dans PrincipalWindow.
+Les actions Search et Play envoient respectivement les requetes search <nom> et play <nom> au serveur C++.
+La reponse est affichee dans le JTextArea, et l'appel reseau est fait dans un thread pour ne pas bloquer l'interface.
+
+## **4eme etape : Makefile Java**
+
+On a adapte le Makefile dans swing/ pour compiler et lancer le client Swing avec un simple make run.
+Le javac -d . genere les classes dans le bon repertoire (package swing) et java -cp . swing.SwingClient lance l'application.

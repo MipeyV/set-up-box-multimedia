@@ -15,5 +15,6 @@ using namespace std;
 int main(int argc, const char* argv[])
 {
     runTest_step_7();
+    runTest_step_7_copy();
     return 0;
 }
